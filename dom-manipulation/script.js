@@ -99,6 +99,7 @@ function addQuote() {
     alert('Please enter a quote text and provide its category.');
     return;
   }
+  
 
   //add new quote to the array  
   quotes.push({ text: quoteText, category: category });
