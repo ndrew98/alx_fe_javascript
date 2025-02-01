@@ -12,6 +12,9 @@
 
   <div class="button-container">
     <button id="exportBtn" >Export Quotes</button>
+    
+    <label for="importFile" class="import-label">Import Quotes</label>
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
   </div>
 
   <script src="script.js"></script>

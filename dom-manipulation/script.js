@@ -61,6 +61,7 @@ function loadQuotes() {
 function createImportExportButtons() {
   const buttonContainer = document.querySelector('.button-container');
   const exportBtn = document.querySelector('#exportBtn');
+  const importInput = document.querySelector('#importFile');
 
   exportBtn.addEventListener('click', exportToJsonFile);
 
@@ -74,19 +75,19 @@ function createImportExportButtons() {
   // exportBtn.onclick = exportToJson;
   
   // Create import input
-  const importInput = document.createElement('input');
-  importInput.type = 'file';
-  importInput.id = 'importFile';
-  importInput.accept = '.json';
-  importInput.onchange = importFromJsonFile;
+  // const importInput = document.createElement('input');
+  // importInput.type = 'file';
+  // importInput.id = 'importFile';
+  // importInput.accept = '.json';
+  // importInput.onchange = importFromJsonFile;
   
   // Create import label
-  const importLabel = document.createElement('label');
-  importLabel.textContent = 'Import Quotes';
-  importLabel.className = 'import-label';
-  importLabel.appendChild(importInput);
+  // const importLabel = document.createElement('label');
+  // importLabel.textContent = 'Import Quotes';
+  // importLabel.className = 'import-label';
+  // importLabel.appendChild(importInput);
   
-  buttonContainer.appendChild(importLabel);
+  // buttonContainer.appendChild(importLabel);
 }
 
 // Export quotes to JSON file
