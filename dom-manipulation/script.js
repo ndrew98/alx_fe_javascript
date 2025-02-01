@@ -59,13 +59,19 @@ function loadQuotes() {
 
 // Create and append import/export buttons
 function createImportExportButtons() {
-  const buttonContainer = document.createElement('div');
-  buttonContainer.className = 'button-container';
+  const buttonContainer = document.querySelector('.button-container');
+  const exportBtn = document.querySelector('#exportBtn');
+
+  exportBtn.addEventListener('click', exportToJsonFile);
+
+
+  // const buttonContainer = document.createElement('div');
+  // buttonContainer.className = 'button-container';
   
-  // Create export button
-  const exportBtn = document.createElement('button');
-  exportBtn.textContent = 'Export Quotes';
-  exportBtn.onclick = exportToJson;
+  // // Create export button
+  // const exportBtn = document.createElement('button');
+  // exportBtn.textContent = 'Export Quotes';
+  // exportBtn.onclick = exportToJson;
   
   // Create import input
   const importInput = document.createElement('input');
@@ -80,13 +86,11 @@ function createImportExportButtons() {
   importLabel.className = 'import-label';
   importLabel.appendChild(importInput);
   
-  buttonContainer.appendChild(exportBtn);
   buttonContainer.appendChild(importLabel);
-  document.body.appendChild(buttonContainer);
 }
 
 // Export quotes to JSON file
-function exportToJson() {
+function exportToJsonFile() {
   const quotesJson = JSON.stringify(quotes, null, 2);
   const blob = new Blob([quotesJson], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
