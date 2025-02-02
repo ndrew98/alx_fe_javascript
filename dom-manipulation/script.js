@@ -1,5 +1,5 @@
 //server endpoint
-const API_URL = '';
+const API_URL = 'https://jsonplaceholder.typicode.com/posts';
 
 let lastSyncTimestamp = Date.now();  //current timestamp in milliseconds
 let isInitialSync = true;
