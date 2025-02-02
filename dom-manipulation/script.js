@@ -92,14 +92,14 @@ function updateSyncStatus(message, isError = false) {
 // Start periodic sync with server
 function startPeriodicSync() {
   // Initial sync
-  syncWithServer();
+  fetchQuotesFromServer();
   
   // Set up periodic sync every 30 seconds
   setInterval(syncWithServer, 30000);
 }
 
 // Sync data with server
-async function syncWithServer() {
+async function fetchQuotesFromServer() {
   try {
       // Simulate fetching server data
       const response = await fetch(`${API_URL}?_start=0&_limit=5`);
@@ -496,7 +496,7 @@ function addQuote() {
   updateSyncStatus('New quote added - syncing...');
     
   // Trigger immediate sync
-  syncWithServer();
+  fetchQuotesFromServer();
 
   //display random quotes
   showRandomQuote();
