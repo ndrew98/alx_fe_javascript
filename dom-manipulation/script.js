@@ -14,7 +14,7 @@ let quotes = [
 // generate html structure and  display quote
 // setting initial variables 
 
-let quoteDisplay , newQuote ;
+let quoteDisplay , newQuote ,categoryFilter;
 
 
 // function to generate html structure and display quote
@@ -23,6 +23,7 @@ function init() {
 
   quoteDisplay = document.getElementById("quoteDisplay");
   newQuote = document.getElementById("newQuote");
+  categoryFilter = document.getElementById("categoryFilter");
 
   // Load quotes from local storage
   loadQuotes();
@@ -35,6 +36,14 @@ function init() {
    // Create and append import/export buttons
    createImportExportButtons();
 
+   // Populate categories dropdown
+   populateCategories();
+
+   // Load and set last selected category
+   const lastCategory = localStorage.getItem('lastSelectedCategory') || 'all';
+   categoryFilter.value = lastCategory;
+   filterQuotes();
+
    // Store last viewed quote in session storage
    window.addEventListener('beforeunload', () => {
     const currentQuote = quoteDisplay.textContent;
@@ -42,6 +51,71 @@ function init() {
 
 }
   );
+}
+
+//function to populate categories dynamically in the dropdown
+function populateCategories() {
+  const categories = new Set(quotes.map(quote => quote.category));
+
+  // console.log(categories);
+
+  // Create default option to render 
+  categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = category;
+    categoryFilter.appendChild(option);
+
+    
+  })
+  
+
+}
+
+//function to filter quotes based on the selected category
+function filterQuotes() {
+  const selectedCategory = categoryFilter.value;
+  // console.log(selectedCategory);
+
+  // save selected category in local storage
+  localStorage.setItem('lastselectedCategory', selectedCategory);
+
+  // Filter quotes
+  const filteredQuotes = selectedCategory === 'all' 
+  ? quotes 
+  : quotes.filter(quote => quote.category === selectedCategory);
+
+// Display filtered quotes
+displayQuotes(filteredQuotes);
+}
+
+// Display quotes in the quote display area
+function displayQuotes(quotesToShow) {
+  quoteDisplay.innerHTML = '';
+  
+  if (quotesToShow.length === 0) {
+      quoteDisplay.textContent = "No quotes available in this category.";
+      return;
+  }
+
+  quotesToShow.forEach(quote => {
+      const quoteDiv = document.createElement('div');
+      quoteDiv.className = 'quote-item';
+      
+      const quoteText = document.createElement('p');
+      quoteText.className = 'quote-text';
+      quoteText.textContent = quote.text;
+      
+      const quoteCategory = document.createElement('span');
+      quoteCategory.className = 'quote-category';
+      quoteCategory.textContent = `Category: ${quote.category}`;
+      
+      quoteDiv.appendChild(quoteText);
+      quoteDiv.appendChild(quoteCategory);
+      quoteDisplay.appendChild(quoteDiv);
+  });
 }
 
 //function to save quotes to local storage
@@ -153,30 +227,36 @@ document.body.appendChild(formContainer);
 
 // function to show random quote
 
+// Show a random quote from the list based on the selected category
 function showRandomQuote() {
-  //condition to check if array is empty
-  if (quotes.length === 0) {
-    quoteDisplay.textContent = "No quotes available. Add some quotes first.";
-    return;
+  const selectedCategory = categoryFilter.value;
+  const eligibleQuotes = selectedCategory === 'all' 
+      ? quotes 
+      : quotes.filter(quote => quote.category === selectedCategory);
+
+  if (eligibleQuotes.length === 0) {
+      quoteDisplay.textContent = "No quotes available in this category.";
+      return;
   }
 
-  const randomIndex = Math.floor(Math.random() * quotes.length);
-  const quote = quotes[randomIndex];
+  const randomIndex = Math.floor(Math.random() * eligibleQuotes.length);
+  const quote = eligibleQuotes[randomIndex];
 
-  //clear previous quote/existing quote if any
-  quoteDisplay.textContent = "";
+  quoteDisplay.innerHTML = '';
 
-  //creating an html structure to render a quote and its category
-  const quoteText = document.createElement("p");
+  const quoteText = document.createElement('p');
+  quoteText.className = 'quote-text';
   quoteText.textContent = quote.text;
 
   const quoteCategory = document.createElement('span');
   quoteCategory.className = 'quote-category';
-  quoteCategory.textContent = `Category: ${quote.category}`
+  quoteCategory.textContent = `Category: ${quote.category}`;
 
-  //appending quote and category to quoteDisplay
   quoteDisplay.appendChild(quoteText);
   quoteDisplay.appendChild(quoteCategory);
+
+  // Store current quote in session storage
+  sessionStorage.setItem('lastViewedQuote', quote.text);
 }
 
 // function to add new quote
@@ -194,6 +274,12 @@ function addQuote() {
 
   //add new quote to the array  
   quotes.push({ text: quoteText, category: category });
+
+  // Save quotes to local storage
+  saveQuotes();
+
+  // Populate categories dropdown
+  populateCategories();
 
   //clear input fields after submission or enter key press
   document.getElementById('newQuoteText').value = '';
