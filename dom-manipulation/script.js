@@ -99,43 +99,34 @@ function startPeriodicSync() {
 }
 
 // Sync data with server
-async function fetchQuotesFromServer() {
+// Add this new function to handle sending data to server
+async function fetchQuotesFromServer(quote) {
   try {
-      // Simulate fetching server data
-      const response = await fetch(`${API_URL}?_start=0&_limit=5`);
-      const serverData = await response.json();
-      
-      // Convert server data to quote format
-      const serverQuotes = serverData.map(post => ({
-          id: post.id,
-          text: post.title,
-          category: post.body.split('\n')[0],
-          timestamp: Date.now()
-      }));
+      const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              title: quote.text,
+              body: quote.category,
+              userId: 1
+          })
+      });
 
-      // Handle initial sync differently
-      if (isInitialSync) {
-        handleInitialSync(serverQuotes);
-        isInitialSync = false;
-        return;
-    }
+      if (!response.ok) {
+          throw new Error('Failed to send quote to server');
+      }
 
-     // Merge server and local quotes
-     mergeQuotes(serverQuotes);
-        
-     // Update sync timestamp
-     lastSyncTimestamp = Date.now();
-     
-     // Update UI
-     updateSyncStatus('Synced successfully');
-     
-     // Refresh display
-     filterQuotes();
-     
- } catch (error) {
-     updateSyncStatus('Sync failed: ' + error.message, true);
- }
+      const data = await response.json();
+      updateSyncStatus('Quote synced to server successfully');
+      return data;
+  } catch (error) {
+      updateSyncStatus('Failed to sync quote: ' + error.message, true);
+      throw error;
+  }
 }
+
 
 // Handle initial sync
 function handleInitialSync(serverQuotes) {
