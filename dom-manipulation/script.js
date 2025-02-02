@@ -71,11 +71,11 @@ function createSyncStatusIndicator() {
   statusDiv.id = 'syncStatus';
   statusDiv.className = 'sync-status';
   document.body.insertBefore(statusDiv, document.body.firstChild);
-  updateSyncStatus('Initialized');
+  syncQuotes('Initialized');
 }
 
 // Update sync status indicator
-function updateSyncStatus(message, isError = false) {
+function syncQuotes(message, isError = false) {
   const statusDiv = document.getElementById('syncStatus');
   statusDiv.textContent = message;
   statusDiv.className = `sync-status ${isError ? 'error' : 'success'}`;
@@ -119,10 +119,10 @@ async function fetchQuotesFromServer(quote) {
       }
 
       const data = await response.json();
-      updateSyncStatus('Quote synced to server successfully');
+      syncQuotes('Quote synced to server successfully');
       return data;
   } catch (error) {
-      updateSyncStatus('Failed to sync quote: ' + error.message, true);
+    syncQuotes('Failed to sync quote: ' + error.message, true);
       throw error;
   }
 }
@@ -141,7 +141,7 @@ function handleInitialSync(serverQuotes) {
   
   quotes = mergedQuotes;
   saveQuotes();
-  updateSyncStatus('Initial sync completed');
+  syncQuotes('Initial sync completed');
 }
 
 // Merge quotes from server with local quotes
@@ -484,7 +484,7 @@ function addQuote() {
   }, 3000);
 
   // Show success message
-  updateSyncStatus('New quote added - syncing...');
+  syncQuotes('New quote added - syncing...');
     
   // Trigger immediate sync
   fetchQuotesFromServer();
