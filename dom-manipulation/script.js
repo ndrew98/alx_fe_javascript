@@ -141,7 +141,7 @@ function handleInitialSync(serverQuotes) {
   
   quotes = mergedQuotes;
   saveQuotes();
-  syncQuotes('Initial sync completed');
+  syncQuotes('Quotes synced with server!');
 }
 
 // Merge quotes from server with local quotes
